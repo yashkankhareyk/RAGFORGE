@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>RAGForge — Chat</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e0f11;--sf:#16181c;--sf2:#1e2028;--bd:#2a2d35;--bd2:#3a3e4a;--tx:#e8e9ec;--mu:#6b7280;--ac:#e8d5b0;--ac2:#a8b8cc;--gn:#4ade80;--mn:'IBM Plex Mono',monospace;--sr:'Fraunces',serif}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--mn);font-size:14px;overflow:hidden}
+.layout{display:grid;grid-template-columns:210px 1fr;height:100vh}
+/* sidebar */
+.sb{background:var(--sf);border-right:1px solid var(--bd);display:flex;flex-direction:column}
+.sb-hd{padding:20px 18px 16px;border-bottom:1px solid var(--bd)}
+.logo{font-family:var(--sr);font-size:18px;font-weight:400;color:var(--ac);display:flex;align-items:center;gap:8px}
+.dot{width:7px;height:7px;background:var(--gn);border-radius:50%;box-shadow:0 0 8px rgba(74,222,128,.5);animation:pulse 2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.sb-nav{padding:10px 8px;flex:1}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:6px;color:var(--mu);font-size:12px;cursor:pointer;transition:all .15s;text-decoration:none;margin-bottom:2px;border:1px solid transparent}
+.ni:hover{background:var(--sf2);color:var(--tx)}
+.ni.active{background:var(--sf2);color:var(--ac);border-color:var(--bd)}
+.ni svg{width:15px;height:15px;flex-shrink:0}
+.sb-ft{padding:14px 18px;border-top:1px solid var(--bd);font-size:11px;color:var(--mu)}
+.sr{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.sd{width:6px;height:6px;border-radius:50%;background:var(--gn);flex-shrink:0}
+/* memory indicator */
+.mem-row{margin-top:10px;padding-top:10px;border-top:1px solid var(--bd)}
+.mem-label{font-size:10px;color:var(--mu);letter-spacing:.5px;margin-bottom:5px}
+.mem-turns{font-size:13px;color:var(--ac);font-family:var(--sr)}
+.new-chat-btn{margin-top:8px;width:100%;padding:6px 0;background:transparent;border:1px solid var(--bd);border-radius:5px;color:var(--mu);font-family:var(--mn);font-size:11px;cursor:pointer;transition:all .15s;letter-spacing:.3px}
+.new-chat-btn:hover{border-color:var(--bd2);color:var(--tx)}
+/* main */
+.main{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:13px 24px;border-bottom:1px solid var(--bd);background:var(--sf);flex-shrink:0}
+.tb-title{font-family:var(--sr);font-size:15px;font-weight:300;color:var(--tx)}
+.sel-wrap{display:flex;align-items:center;gap:8px}
+.sel-lbl{font-size:10px;color:var(--mu);letter-spacing:1px;text-transform:uppercase}
+.psel{background:var(--sf2);border:1px solid var(--bd);color:var(--ac);font-family:var(--mn);font-size:12px;padding:6px 28px 6px 10px;border-radius:6px;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:border-color .15s}
+.psel option{background:var(--sf2)}
+.pbadge{font-size:10px;padding:3px 8px;border-radius:4px;font-weight:500}
+.bf{background:rgba(74,222,128,.1);color:var(--gn);border:1px solid rgba(74,222,128,.2)}
+.bd_d{background:rgba(168,184,204,.1);color:var(--ac2);border:1px solid rgba(168,184,204,.2)}
+.bh{background:rgba(232,213,176,.1);color:var(--ac);border:1px solid rgba(232,213,176,.2)}
+/* messages */
+.msgs{flex:1;overflow-y:auto;padding:28px 24px;display:flex;flex-direction:column;gap:20px;scroll-behavior:smooth}
+.msgs::-webkit-scrollbar{width:3px}
+.msgs::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
+.es{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:40px}
+.et{font-family:var(--sr);font-size:24px;font-weight:300;font-style:italic;color:var(--tx);opacity:.3}
+.esb{font-size:11px;color:var(--mu);opacity:.5}
+.sugs{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:10px}
+.sug{font-size:12px;padding:6px 13px;border:1px solid var(--bd);border-radius:20px;color:var(--mu);cursor:pointer;transition:all .15s;background:transparent;font-family:var(--mn)}
+.sug:hover{border-color:var(--ac);color:var(--ac);background:rgba(232,213,176,.05)}
+.msg{display:flex;gap:12px;max-width:760px;animation:mi .22s ease both}
+@keyframes mi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{align-self:flex-end;flex-direction:row-reverse}
+.av{width:28px;height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;margin-top:2px}
+.av-ai{background:var(--sf2);border:1px solid var(--bd);color:var(--ac)}
+.av-u{background:rgba(232,213,176,.1);border:1px solid rgba(232,213,176,.2);color:var(--ac)}
+.bw{display:flex;flex-direction:column;gap:5px}
+.bub{padding:12px 15px;border-radius:8px;line-height:1.75;font-size:13px;max-width:620px}
+.bub-ai{background:var(--sf);border:1px solid var(--bd);color:var(--tx);border-top-left-radius:2px}
+.bub-u{background:var(--sf2);border:1px solid var(--bd);color:var(--tx);border-top-right-radius:2px}
+/* meta row */
+.meta{display:flex;align-items:center;gap:8px;font-size:10px;color:var(--mu);padding-left:2px;flex-wrap:wrap}
+.chip{font-size:10px;padding:2px 7px;background:var(--sf2);border:1px solid var(--bd);border-radius:4px;color:var(--mu)}
+.chip.lat{border-color:rgba(74,222,128,.2);color:var(--gn);background:rgba(74,222,128,.05)}
+.chip.tok{border-color:rgba(168,184,204,.2);color:var(--ac2);background:rgba(168,184,204,.05)}
+.chip.cost{border-color:rgba(232,213,176,.2);color:var(--ac);background:rgba(232,213,176,.05)}
+/* stage bars */
+.stages{display:flex;gap:2px;margin-top:4px;max-width:300px}
+.stage-bar{height:3px;border-radius:1px;transition:width .3s}
+.stage-legend{display:flex;gap:8px;font-size:9px;color:var(--mu);margin-top:2px}
+.sl-item{display:flex;align-items:center;gap:3px}
+.sl-dot{width:6px;height:6px;border-radius:1px}
+/* typing */
+.typing{display:flex;gap:4px;padding:13px 15px;background:var(--sf);border:1px solid var(--bd);border-radius:8px;border-top-left-radius:2px;width:fit-content}
+.d{width:5px;height:5px;background:var(--mu);border-radius:50%;animation:bn 1.2s ease-in-out infinite}
+.d:nth-child(2){animation-delay:.2s}.d:nth-child(3){animation-delay:.4s}
+@keyframes bn{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-5px);opacity:1}}
+.errbub{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);color:#fca5a5;padding:10px 14px;border-radius:8px;font-size:12px;max-width:600px}
+/* input */
+.inp-area{padding:14px 24px 18px;border-top:1px solid var(--bd);background:var(--sf);flex-shrink:0}
+.inp-row{display:flex;align-items:flex-end;gap:9px;background:var(--sf2);border:1px solid var(--bd);border-radius:10px;padding:9px 9px 9px 14px;transition:border-color .15s}
+.inp-row:focus-within{border-color:var(--bd2)}
+#ci{flex:1;background:transparent;border:none;outline:none;color:var(--tx);font-family:var(--mn);font-size:13px;line-height:1.6;resize:none;max-height:130px;overflow-y:auto}
+#ci::placeholder{color:var(--mu)}
+.sbtn{width:32px;height:32px;border-radius:7px;border:none;background:var(--ac);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.sbtn:hover{background:#f0dfc0}.sbtn:active{transform:scale(.95)}.sbtn:disabled{opacity:.3;cursor:not-allowed}
+.hints{display:flex;justify-content:space-between;margin-top:7px;font-size:10px;color:var(--mu);padding:0 2px}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sb">
+    <div class="sb-hd"><div class="logo"><span class="dot"></span>RAGForge</div></div>
+    <nav class="sb-nav">
+      <a href="index.html" class="ni active">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h8M2 12h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Chat
+      </a>
+      <a href="dashboard.html" class="ni">
+        <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="9" width="3" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="6.5" y="5" width="3" height="9" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="2" width="3" height="12" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>Metrics
+      </a>
+    </nav>
+    <div class="sb-ft">
+      <div class="sr"><span class="sd"></span>API connected</div>
+      <div style="font-size:10px;margin-top:2px;color:var(--mu)">localhost:8000</div>
+      <div class="mem-row">
+        <div class="mem-label">MEMORY</div>
+        <div class="mem-turns" id="mem-turns">0 turns</div>
+        <button class="new-chat-btn" onclick="newChat()">+ New chat</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <span class="tb-title">Ask your documents</span>
+      <div class="sel-wrap">
+        <span class="sel-lbl">Pipeline</span>
+        <select class="psel" id="ps" onchange="updateBadge()">
+          <option value="full">Hybrid + Rerank</option>
+          <option value="hybrid">Hybrid (no rerank)</option>
+          <option value="dense">Dense only</option>
+        </select>
+        <span class="pbadge bf" id="pb">FULL</span>
+      </div>
+    </div>
+
+    <div class="msgs" id="msgs">
+      <div class="es" id="es">
+        <div class="et">What do you want to know?</div>
+        <div class="esb">Memory enabled · context preserved across turns</div>
+        <div class="sugs">
+          <button class="sug" onclick="fill(this)">what is an asset</button>
+          <button class="sug" onclick="fill(this)">types of web based attacks</button>
+          <button class="sug" onclick="fill(this)">tell me more about the first one</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="inp-area">
+      <div class="inp-row">
+        <textarea id="ci" rows="1" placeholder="Ask anything… memory keeps context between turns" onkeydown="hk(event)" oninput="rsz(this)"></textarea>
+        <button class="sbtn" id="sb" onclick="send()">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 11V2M2 6.5l4.5-4.5 4.5 4.5" stroke="#0e0f11" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="hints"><span>Enter to send · Shift+Enter for newline</span><span id="turn-count" style="color:var(--mu)"></span></div>
+    </div>
+  </main>
+</div>
+
+<script>
+const API = 'http://localhost:8000';
+// Generate a stable session ID for this browser tab
+const SESSION_ID = 'sess_' + Math.random().toString(36).slice(2, 10);
+let busy = false;
+let turnCount = 0;
+
+const msgs = document.getElementById('msgs');
+const ci   = document.getElementById('ci');
+const sb   = document.getElementById('sb');
+
+function updateBadge() {
+  const v = document.getElementById('ps').value;
+  const b = document.getElementById('pb');
+  const m = {full:['bf','FULL'],hybrid:['bh','HYBRID'],dense:['bd_d','DENSE']};
+  b.className = 'pbadge ' + m[v][0]; b.textContent = m[v][1];
+}
+
+function rsz(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,130)+'px'; }
+function hk(e)   { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();} }
+function fill(b) { ci.value=b.textContent.trim(); rsz(ci); ci.focus(); }
+
+function updateMemoryDisplay() {
+  turnCount++;
+  document.getElementById('mem-turns').textContent = turnCount + ' turn' + (turnCount!==1?'s':'');
+  document.getElementById('turn-count').textContent = 'session · ' + turnCount + ' turns';
+}
+
+function newChat() {
+  fetch(`${API}/session/${SESSION_ID}`, {method:'DELETE'}).catch(()=>{});
+  // Clear UI
+  msgs.innerHTML = `<div class="es" id="es">
+    <div class="et">New conversation started</div>
+    <div class="esb">Memory cleared · fresh context</div>
+  </div>`;
+  turnCount = 0;
+  document.getElementById('mem-turns').textContent = '0 turns';
+  document.getElementById('turn-count').textContent = '';
+}
+
+function addMsg(role, text, meta={}) {
+  const es = document.getElementById('es'); if(es) es.remove();
+  const wrap = document.createElement('div');
+  wrap.className = 'msg ' + role;
+  const av = document.createElement('div');
+  av.className = 'av av-'+(role==='user'?'u':'ai');
+  av.textContent = role==='user'?'YOU':'RF';
+  const bw = document.createElement('div'); bw.className='bw';
+  const bub = document.createElement('div');
+  bub.className='bub bub-'+(role==='user'?'u':'ai');
+  bub.textContent = text;
+  bw.appendChild(bub);
+
+  if (role==='ai') {
+    // chips row
+    const m = document.createElement('div'); m.className='meta';
+    if (meta.latency_ms)       { const c=document.createElement('span'); c.className='chip lat'; c.textContent='⏱ '+meta.latency_ms+'ms total'; m.appendChild(c); }
+    if (meta.prompt_tokens)    { const c=document.createElement('span'); c.className='chip tok'; c.textContent=meta.prompt_tokens+' in / '+meta.completion_tokens+' out'; m.appendChild(c); }
+    if (meta.estimated_cost_usd!==undefined) {
+      const c=document.createElement('span'); c.className='chip cost';
+      c.textContent = meta.estimated_cost_usd===0?'$0.00 (free)':'$'+meta.estimated_cost_usd.toFixed(6);
+      m.appendChild(c);
+    }
+    if (meta.sources) {
+      [...new Set(meta.sources)].slice(0,2).forEach(s=>{
+        const c=document.createElement('span'); c.className='chip';
+        c.textContent=s.split(/[/\\]/).pop(); m.appendChild(c);
+      });
+    }
+    bw.appendChild(m);
+
+    // Stage breakdown bar
+    if (meta.retrieval_ms && meta.rerank_ms && meta.llm_ms) {
+      const total = meta.retrieval_ms + meta.rerank_ms + meta.llm_ms;
+      const rPct  = (meta.retrieval_ms/total*100).toFixed(1);
+      const rkPct = (meta.rerank_ms/total*100).toFixed(1);
+      const lPct  = (meta.llm_ms/total*100).toFixed(1);
+      const bars = document.createElement('div'); bars.className='stages';
+      bars.innerHTML = `
+        <div class="stage-bar" style="width:${rPct}%;background:#378ADD" title="Retrieval ${meta.retrieval_ms}ms"></div>
+        <div class="stage-bar" style="width:${rkPct}%;background:#7F77DD" title="Rerank ${meta.rerank_ms}ms"></div>
+        <div class="stage-bar" style="width:${lPct}%;background:#4ade80" title="LLM ${meta.llm_ms}ms"></div>`;
+      const leg = document.createElement('div'); leg.className='stage-legend';
+      leg.innerHTML=`<span class="sl-item"><span class="sl-dot" style="background:#378ADD"></span>${meta.retrieval_ms}ms retrieve</span><span class="sl-item"><span class="sl-dot" style="background:#7F77DD"></span>${meta.rerank_ms}ms rerank</span><span class="sl-item"><span class="sl-dot" style="background:#4ade80"></span>${meta.llm_ms}ms llm</span>`;
+      bw.appendChild(bars); bw.appendChild(leg);
+    }
+  }
+  wrap.appendChild(av); wrap.appendChild(bw);
+  msgs.appendChild(wrap); msgs.scrollTop=msgs.scrollHeight;
+}
+
+function addTyping() {
+  const w=document.createElement('div'); w.className='msg ai'; w.id='typing';
+  const av=document.createElement('div'); av.className='av av-ai'; av.textContent='RF';
+  const t=document.createElement('div'); t.className='typing';
+  for(let i=0;i<3;i++){const d=document.createElement('div');d.className='d';t.appendChild(d);}
+  w.appendChild(av); w.appendChild(t); msgs.appendChild(w); msgs.scrollTop=msgs.scrollHeight;
+}
+
+function removeTyping(){ const t=document.getElementById('typing'); if(t)t.remove(); }
+
+function addErr(msg){
+  const d=document.createElement('div'); d.className='errbub'; d.textContent='⚠ '+msg;
+  msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight;
+}
+
+async function send() {
+  const q = ci.value.trim();
+  if (!q || busy) return;
+  addMsg('user', q);
+  ci.value=''; ci.style.height='auto';
+  busy=true; sb.disabled=true; addTyping();
+
+  try {
+    const r = await fetch(`${API}/query`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ question:q, session_id:SESSION_ID, include_contexts:false })
+    });
+    removeTyping();
+    if (!r.ok) { const e=await r.json().catch(()=>({detail:'Error'})); addErr(e.detail||'HTTP '+r.status); return; }
+    const d = await r.json();
+    addMsg('ai', d.answer, {
+      latency_ms:d.latency_ms, retrieval_ms:d.retrieval_ms,
+      rerank_ms:d.rerank_ms, llm_ms:d.llm_ms,
+      prompt_tokens:d.prompt_tokens, completion_tokens:d.completion_tokens,
+      estimated_cost_usd:d.estimated_cost_usd, sources:d.sources
+    });
+    updateMemoryDisplay();
+  } catch(e) {
+    removeTyping();
+    addErr('Cannot reach API at '+API+'. Run: uvicorn src.api:app --reload --port 8000');
+  } finally { busy=false; sb.disabled=false; ci.focus(); }
+}
+</script>
+</body>
+</html>

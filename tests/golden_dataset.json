@@ -1,0 +1,134 @@
+[
+  {
+    "question": "What is the purpose of the Prevention of Sexual Harassment policy?",
+    "ground_truth": "The purpose of the policy is to provide protection against sexual harassment at the workplace and establish procedures for prevention and redressal of complaints."
+  },
+  {
+    "question": "Who is considered an aggrieved individual under the POSH policy?",
+    "ground_truth": "An aggrieved individual is any person of any age, whether employed or not, who alleges to have been subjected to sexual harassment at the workplace."
+  },
+  {
+    "question": "Who can file a complaint under the sexual harassment policy?",
+    "ground_truth": "Any aggrieved individual or their representative may file a complaint alleging sexual harassment under the policy."
+  },
+  {
+    "question": "Who is considered an employee under the sexual harassment policy?",
+    "ground_truth": "An employee includes anyone employed on a permanent, temporary, part-time, contract, probation, trainee, or apprentice basis, whether directly or through an agent."
+  },
+  {
+    "question": "Who is referred to as the respondent in a sexual harassment complaint?",
+    "ground_truth": "The respondent is the person against whom a complaint of sexual harassment has been made."
+  },
+  {
+    "question": "What is the Internal Committee in the POSH policy?",
+    "ground_truth": "The Internal Committee (IC) is a committee established by the organization to receive, investigate, and address complaints of sexual harassment."
+  },
+  {
+    "question": "Who is the presiding officer of the Internal Committee?",
+    "ground_truth": "The presiding officer is a senior-level woman employee appointed to lead the Internal Committee."
+  },
+  {
+    "question": "What quorum is required for Internal Committee proceedings?",
+    "ground_truth": "A quorum of four members is required, including the presiding officer, at least two members (one of whom must be female), and the external member."
+  },
+  {
+    "question": "What behaviors are considered sexual harassment under the policy?",
+    "ground_truth": "Sexual harassment includes unwelcome physical contact, requests for sexual favors, sexually colored remarks, showing pornography, or any unwelcome physical, verbal, visual, or non-verbal conduct of a sexual nature."
+  },
+  {
+    "question": "Can sexual harassment occur outside office premises?",
+    "ground_truth": "Yes, sexual harassment can occur at any place visited during the course of employment, including transportation, accommodation, or business trips."
+  },
+  {
+    "question": "Can a single incident be considered sexual harassment?",
+    "ground_truth": "Yes, sexual harassment may involve a series of incidents or even a single occurrence."
+  },
+  {
+    "question": "What circumstances may indicate sexual harassment in the workplace?",
+    "ground_truth": "Circumstances such as promises of preferential treatment, threats regarding employment, hostile work environments, or humiliating treatment may indicate sexual harassment."
+  },
+  {
+    "question": "What is meant by workplace in the POSH policy?",
+    "ground_truth": "Workplace includes company offices, branches, premises, and any location visited by employees during the course of employment."
+  },
+  {
+    "question": "How long does the Internal Committee have to complete an inquiry?",
+    "ground_truth": "The Internal Committee must complete the inquiry within 90 days from the receipt of the complaint."
+  },
+  {
+    "question": "Within how many days must the Internal Committee submit its report after completing the inquiry?",
+    "ground_truth": "The Internal Committee must submit its findings to the relevant authorities within 10 days of completing the inquiry."
+  },
+  {
+    "question": "Can the parties appeal the decision of the Internal Committee?",
+    "ground_truth": "Yes, any person aggrieved by the recommendation of the Internal Committee may file an appeal under the relevant provisions of the Act."
+  },
+  {
+    "question": "Is conciliation allowed under the sexual harassment complaint process?",
+    "ground_truth": "Yes, conciliation may be initiated if requested by the aggrieved person before the inquiry begins."
+  },
+  {
+    "question": "What is the role of the employer in relation to the Internal Committee?",
+    "ground_truth": "The employer is responsible for management and supervision of the workplace but does not form part of the Internal Committee."
+  },
+  {
+    "question": "What happens if sexual harassment allegations are proven?",
+    "ground_truth": "Based on the findings of the Internal Committee, disciplinary action may be recommended against the accused."
+  },
+  {
+    "question": "What does the Code of Conduct say about discrimination?",
+    "ground_truth": "The company does not tolerate discrimination based on race, caste, religion, gender, age, disability, sexual orientation, or any other legally protected characteristic."
+  },
+  {
+    "question": "How should employees treat colleagues according to the Code of Conduct?",
+    "ground_truth": "Employees must treat others with respect, maintain an inclusive mindset, and avoid derogatory comments or discrimination."
+  },
+  {
+    "question": "What responsibilities do supervisors have regarding workplace fairness?",
+    "ground_truth": "Supervisors must ensure fair employment decisions, create an equitable work environment, and address concerns related to discrimination or harassment."
+  },
+  {
+    "question": "How should employees respond if they observe discriminatory jokes or messages?",
+    "ground_truth": "Employees should report such incidents to their manager or HR as they violate company values and policies."
+  },
+  {
+    "question": "What constitutes harassment in the workplace?",
+    "ground_truth": "Harassment includes verbal, physical, or visual conduct that creates an intimidating, hostile, degrading, or offensive work environment."
+  },
+  {
+    "question": "What should employees do if they experience or witness harassment?",
+    "ground_truth": "Employees should report incidents of harassment to their manager, HR, or designated reporting channels."
+  },
+  {
+    "question": "What is the company’s stance on retaliation against whistleblowers?",
+    "ground_truth": "Retaliation against individuals who report concerns in good faith or participate in investigations is strictly prohibited."
+  },
+  {
+    "question": "What disciplinary actions can occur if the Code of Conduct is violated?",
+    "ground_truth": "Disciplinary actions may include verbal or written warnings, suspension, reduction of bonuses, or termination of employment depending on the severity of the violation."
+  },
+  {
+    "question": "Can employees be disciplined for failing to report known violations?",
+    "ground_truth": "Yes, employees who are aware of violations and fail to report them may face disciplinary action."
+  },
+  {
+    "question": "Who administers and oversees the Code of Conduct in the organization?",
+    "ground_truth": "The Office of Integrity and Compliance administers the Code of Conduct and oversees investigations of potential violations."
+  },
+  {
+    "question": "Are employees required to acknowledge the Code of Conduct?",
+    "ground_truth": "Yes, employees are required to acknowledge that they have read and understood the Code of Conduct."
+  },
+  {
+    "question": "Does failure to read the Code of Conduct exempt employees from compliance?",
+    "ground_truth": "No, failure to read or acknowledge the Code does not exempt employees from complying with it."
+  },
+  {
+    "question": "How can employees report ethical concerns or violations?",
+    "ground_truth": "Employees can report concerns through their manager, HR, compliance offices, or designated helpline channels."
+  },
+  {
+    "question": "What actions may lead to disciplinary action under the Code of Conduct?",
+    "ground_truth": "Actions such as violating company policies, directing others to violate policies, failing to report violations, or retaliating against whistleblowers may lead to disciplinary action."
+  }
+]

@@ -1,0 +1,98 @@
+[
+  {
+    "config": "Dense-Only",
+    "faithfulness": 0.7222,
+    "answer_relevancy": 0.6055,
+    "context_precision": 0.9458,
+    "context_recall": 1.0,
+    "num_samples": 3,
+    "timestamp": "2026-03-13T11:22:38.173488",
+    "per_sample": [
+      {
+        "question": "what is asset",
+        "faithfulness": 0.6666666666666666,
+        "answer_relevancy": 0.8432267407913714,
+        "context_precision": 0.94999999997625,
+        "context_recall": 1.0
+      },
+      {
+        "question": "what are types of web based attacks",
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.0,
+        "context_precision": 0.99999999995,
+        "context_recall": 1.0
+      },
+      {
+        "question": "what is system based attack",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9734179045519888,
+        "context_precision": 0.8874999999778125,
+        "context_recall": 1.0
+      }
+    ]
+  },
+  {
+    "config": "Hybrid-NoRerank",
+    "faithfulness": 0.9697,
+    "answer_relevancy": 0.8237,
+    "context_precision": 0.7681,
+    "context_recall": 1.0,
+    "num_samples": 3,
+    "timestamp": "2026-03-13T11:24:27.728510",
+    "per_sample": [
+      {
+        "question": "what is asset",
+        "faithfulness": 0.9090909090909091,
+        "answer_relevancy": 0.8086106487679464,
+        "context_precision": 0.8874999999778125,
+        "context_recall": 1.0
+      },
+      {
+        "question": "what are types of web based attacks",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9827837136379792,
+        "context_precision": 0.99999999995,
+        "context_recall": 1.0
+      },
+      {
+        "question": "what is system based attack",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.6796202017217263,
+        "context_precision": 0.4166666666458333,
+        "context_recall": 1.0
+      }
+    ]
+  },
+  {
+    "config": "Hybrid+Rerank",
+    "faithfulness": 1.0,
+    "answer_relevancy": 0.9331,
+    "context_precision": 0.9722,
+    "context_recall": 1.0,
+    "num_samples": 3,
+    "timestamp": "2026-03-13T11:26:10.202932",
+    "per_sample": [
+      {
+        "question": "what is asset",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8432267407913714,
+        "context_precision": 0.999999999975,
+        "context_recall": 1.0
+      },
+      {
+        "question": "what are types of web based attacks",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9827837136379792,
+        "context_precision": 0.99999999995,
+        "context_recall": 1.0
+      },
+      {
+        "question": "what is system based attack",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9734179045519888,
+        "context_precision": 0.9166666666361111,
+        "context_recall": 1.0
+      }
+    ]
+  }
+]

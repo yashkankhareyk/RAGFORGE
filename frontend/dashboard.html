@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>RAGForge — Metrics</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e0f11;--sf:#16181c;--sf2:#1e2028;--bd:#2a2d35;--bd2:#3a3e4a;--tx:#e8e9ec;--mu:#6b7280;--ac:#e8d5b0;--ac2:#a8b8cc;--gn:#4ade80;--mn:'IBM Plex Mono',monospace;--sr:'Fraunces',serif}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--bg);color:var(--tx);font-family:var(--mn);font-size:14px}
+.layout{display:grid;grid-template-columns:210px 1fr;min-height:100vh}
+.sb{background:var(--sf);border-right:1px solid var(--bd);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.sb-hd{padding:20px 18px 16px;border-bottom:1px solid var(--bd)}
+.logo{font-family:var(--sr);font-size:18px;font-weight:400;color:var(--ac);display:flex;align-items:center;gap:8px}
+.dot{width:7px;height:7px;background:var(--gn);border-radius:50%;box-shadow:0 0 8px rgba(74,222,128,.5);animation:pulse 2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.sb-nav{padding:10px 8px;flex:1}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:6px;color:var(--mu);font-size:12px;cursor:pointer;transition:all .15s;text-decoration:none;margin-bottom:2px;border:1px solid transparent}
+.ni:hover{background:var(--sf2);color:var(--tx)}
+.ni.active{background:var(--sf2);color:var(--ac);border-color:var(--bd)}
+.ni svg{width:15px;height:15px;flex-shrink:0}
+.sb-ft{padding:14px 18px;border-top:1px solid var(--bd);font-size:11px;color:var(--mu)}
+.sr-{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.sd{width:6px;height:6px;border-radius:50%;background:var(--gn);flex-shrink:0}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--gn);flex-shrink:0;animation:pulse 1.5s ease-in-out infinite}
+/* main */
+.main{padding:32px 32px 48px;overflow-y:auto}
+.ph{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px}
+.pt{font-family:var(--sr);font-size:26px;font-weight:300;color:var(--tx);line-height:1}
+.ps{font-size:11px;color:var(--mu);margin-top:5px}
+.live-badge{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gn);border:1px solid rgba(74,222,128,.2);background:rgba(74,222,128,.05);padding:6px 12px;border-radius:6px}
+/* SECTION */
+.sl{font-size:10px;color:var(--mu);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.sl::after{content:'';flex:1;height:1px;background:var(--bd)}
+/* STAT CARDS */
+.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:28px}
+.stat{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:16px 18px;transition:border-color .15s}
+.stat:hover{border-color:var(--bd2)}
+.stat-lbl{font-size:11px;color:var(--mu);margin-bottom:7px;letter-spacing:.3px}
+.stat-val{font-family:var(--sr);font-size:26px;font-weight:300;color:var(--tx);line-height:1;margin-bottom:4px}
+.stat-sub{font-size:10px;color:var(--mu)}
+.stat-sub.free{color:var(--gn)}
+/* LATENCY BREAKDOWN */
+.lat-section{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:22px 24px;margin-bottom:24px}
+.lat-title{font-size:12px;color:var(--mu);letter-spacing:.5px;text-transform:uppercase;margin-bottom:18px}
+.stage-row{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.stage-row:last-child{margin-bottom:0}
+.stage-name{font-size:12px;color:var(--mu);width:80px;flex-shrink:0}
+.stage-bar-wrap{flex:1;height:8px;background:var(--sf2);border-radius:4px;overflow:hidden}
+.stage-bar-fill{height:8px;border-radius:4px;transition:width .6s ease}
+.stage-ms{font-size:12px;color:var(--tx);width:60px;text-align:right;flex-shrink:0}
+.stage-pct{font-size:10px;color:var(--mu);width:36px;text-align:right;flex-shrink:0}
+/* CHARTS */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.cc{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:20px 22px}
+.ct{font-size:12px;color:var(--mu);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
+.csb{font-size:11px;color:var(--mu);opacity:.6;margin-bottom:14px}
+.cw{position:relative;width:100%}
+/* QUERY TABLE */
+.qtbl{background:var(--sf);border:1px solid var(--bd);border-radius:8px;overflow:hidden;margin-bottom:24px}
+.qtbl-hd{padding:14px 20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.qtbl-title{font-size:12px;color:var(--mu);letter-spacing:.5px;text-transform:uppercase}
+.qtbl-sub{font-size:10px;color:var(--mu)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{padding:9px 16px;text-align:left;font-size:10px;color:var(--mu);font-weight:500;letter-spacing:.8px;text-transform:uppercase;background:var(--sf2);border-bottom:1px solid var(--bd)}
+td{padding:10px 16px;border-bottom:1px solid var(--bd);color:var(--tx)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.012)}
+.pill{font-size:10px;padding:2px 7px;border-radius:4px}
+.p-fast{background:rgba(74,222,128,.1);color:var(--gn);border:1px solid rgba(74,222,128,.2)}
+.p-mid{background:rgba(232,213,176,.1);color:var(--ac);border:1px solid rgba(232,213,176,.2)}
+.p-slow{background:rgba(248,113,113,.1);color:#f87171;border:1px solid rgba(248,113,113,.2)}
+.p-free{background:rgba(74,222,128,.1);color:var(--gn);border:1px solid rgba(74,222,128,.2)}
+/* TOKEN COST */
+.cost-section{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:22px 24px;margin-bottom:24px}
+.cost-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd);font-size:13px}
+.cost-row:last-child{border-bottom:none}
+.cost-k{color:var(--mu);font-size:12px}
+.cost-v{color:var(--tx);font-family:var(--sr);font-size:15px}
+.cost-v.free{color:var(--gn)}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sb">
+    <div class="sb-hd"><div class="logo"><span class="dot"></span>RAGForge</div></div>
+    <nav class="sb-nav">
+      <a href="index.html" class="ni">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h8M2 12h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Chat
+      </a>
+      <a href="dashboard.html" class="ni active">
+        <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="9" width="3" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="6.5" y="5" width="3" height="9" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="11" y="2" width="3" height="12" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>Metrics
+      </a>
+    </nav>
+    <div class="sb-ft">
+      <div class="sr-"><span class="sd"></span>API connected</div>
+      <div style="font-size:10px;margin-top:2px">localhost:8000</div>
+      <div style="margin-top:10px;font-size:10px;color:var(--mu)">Auto-refresh: 5s</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="ph">
+      <div>
+        <div class="pt">Metrics</div>
+        <div class="ps">Latency · tokens · cost · memory · live query log</div>
+      </div>
+      <div class="live-badge"><span class="live-dot"></span>Live</div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="sl">Overview</div>
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-lbl">Total queries</div><div class="stat-val" id="s-total">—</div><div class="stat-sub">since server start</div></div>
+      <div class="stat"><div class="stat-lbl">Avg latency</div><div class="stat-val" id="s-avg">—</div><div class="stat-sub" id="s-p95">p95 —</div></div>
+      <div class="stat"><div class="stat-lbl">Total tokens</div><div class="stat-val" id="s-tokens">—</div><div class="stat-sub" id="s-tok-sub">prompt + completion</div></div>
+      <div class="stat"><div class="stat-lbl">Estimated cost</div><div class="stat-val" id="s-cost">—</div><div class="stat-sub free" id="s-cost-sub">—</div></div>
+    </div>
+
+    <!-- LATENCY BREAKDOWN -->
+    <div class="sl">Avg latency breakdown</div>
+    <div class="lat-section">
+      <div class="lat-title">Per pipeline stage — average across last 200 queries</div>
+      <div class="stage-row">
+        <span class="stage-name">Retrieval</span>
+        <div class="stage-bar-wrap"><div class="stage-bar-fill" id="bar-ret" style="background:#378ADD;width:0%"></div></div>
+        <span class="stage-ms" id="ms-ret">—</span>
+        <span class="stage-pct" id="pct-ret">—</span>
+      </div>
+      <div class="stage-row">
+        <span class="stage-name">Reranking</span>
+        <div class="stage-bar-wrap"><div class="stage-bar-fill" id="bar-rnk" style="background:#7F77DD;width:0%"></div></div>
+        <span class="stage-ms" id="ms-rnk">—</span>
+        <span class="stage-pct" id="pct-rnk">—</span>
+      </div>
+      <div class="stage-row">
+        <span class="stage-name">LLM</span>
+        <div class="stage-bar-wrap"><div class="stage-bar-fill" id="bar-llm" style="background:#4ade80;width:0%"></div></div>
+        <span class="stage-ms" id="ms-llm">—</span>
+        <span class="stage-pct" id="pct-llm">—</span>
+      </div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="sl">Trends</div>
+    <div class="charts-grid">
+      <div class="cc">
+        <div class="ct">Latency over time</div>
+        <div class="csb">Total ms per query — last 20</div>
+        <div class="cw" style="height:200px"><canvas id="latChart"></canvas></div>
+      </div>
+      <div class="cc">
+        <div class="ct">Token usage</div>
+        <div class="csb">Prompt vs completion tokens — last 20</div>
+        <div class="cw" style="height:200px"><canvas id="tokChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- COST BREAKDOWN -->
+    <div class="sl">Cost analysis</div>
+    <div class="cost-section">
+      <div class="cost-row"><span class="cost-k">Total prompt tokens</span><span class="cost-v" id="c-ptok">—</span></div>
+      <div class="cost-row"><span class="cost-k">Total completion tokens</span><span class="cost-v" id="c-ctok">—</span></div>
+      <div class="cost-row"><span class="cost-k">Total cost (estimated)</span><span class="cost-v free" id="c-total">—</span></div>
+      <div class="cost-row"><span class="cost-k">Avg cost per query</span><span class="cost-v free" id="c-avg">—</span></div>
+      <div class="cost-row"><span class="cost-k">Active sessions</span><span class="cost-v" id="c-sess">—</span></div>
+    </div>
+
+    <!-- QUERY TABLE -->
+    <div class="sl">Recent queries</div>
+    <div class="qtbl">
+      <div class="qtbl-hd">
+        <span class="qtbl-title">Last 20 queries</span>
+        <span class="qtbl-sub">Auto-updates every 5s</span>
+      </div>
+      <table>
+        <thead><tr>
+          <th>Question</th><th>Total</th><th>Retrieve</th><th>Rerank</th><th>LLM</th><th>Tokens</th><th>Cost</th>
+        </tr></thead>
+        <tbody id="qtbody"></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const API = 'http://localhost:8000';
+let latChart = null, tokChart = null;
+
+function latPill(ms) {
+  if (ms < 1000)  return `<span class="pill p-fast">${ms}ms</span>`;
+  if (ms < 2500)  return `<span class="pill p-mid">${ms}ms</span>`;
+  return `<span class="pill p-slow">${ms}ms</span>`;
+}
+
+function costStr(v) {
+  if (v === 0) return '<span class="pill p-free">$0.00</span>';
+  return '$' + v.toFixed(6);
+}
+
+function pct(part, total) {
+  if (!total) return '0%';
+  return (part/total*100).toFixed(0)+'%';
+}
+
+async function refresh() {
+  let d;
+  try {
+    const r = await fetch(`${API}/metrics`);
+    if (!r.ok) return;
+    d = await r.json();
+  } catch(e) { return; }
+
+  // stat cards
+  document.getElementById('s-total').textContent = d.total_queries;
+  document.getElementById('s-avg').textContent   = d.avg_total_ms + 'ms';
+  document.getElementById('s-p95').textContent   = 'p95 ' + d.p95_total_ms + 'ms';
+  const totalTok = (d.total_prompt_tokens||0) + (d.total_completion_tokens||0);
+  document.getElementById('s-tokens').textContent = totalTok.toLocaleString();
+  document.getElementById('s-cost').textContent  = d.total_cost_usd===0 ? '$0.00' : '$'+d.total_cost_usd.toFixed(4);
+  document.getElementById('s-cost-sub').textContent = d.total_cost_usd===0 ? 'free tier models' : 'estimated';
+
+  // latency bars
+  const stageTotal = (d.avg_retrieval_ms||0) + (d.avg_rerank_ms||0) + (d.avg_llm_ms||0);
+  ['ret','rnk','llm'].forEach((k,i) => {
+    const ms = [d.avg_retrieval_ms, d.avg_rerank_ms, d.avg_llm_ms][i] || 0;
+    const p  = stageTotal ? (ms/stageTotal*100).toFixed(1) : 0;
+    document.getElementById('bar-'+k).style.width = p + '%';
+    document.getElementById('ms-'+k).textContent  = ms + 'ms';
+    document.getElementById('pct-'+k).textContent = p + '%';
+  });
+
+  // cost section
+  document.getElementById('c-ptok').textContent  = (d.total_prompt_tokens||0).toLocaleString();
+  document.getElementById('c-ctok').textContent  = (d.total_completion_tokens||0).toLocaleString();
+  document.getElementById('c-total').textContent = d.total_cost_usd===0 ? '$0.00 (free)' : '$'+d.total_cost_usd.toFixed(6);
+  document.getElementById('c-avg').textContent   = d.avg_cost_per_query===0 ? '$0.00 (free)' : '$'+d.avg_cost_per_query.toFixed(6);
+  document.getElementById('c-sess').textContent  = (d.active_sessions||0) + ' active';
+
+  // charts
+  const recent = (d.recent_queries||[]).reverse();
+  const labels  = recent.map((_,i) => '#'+(i+1));
+  const latData = recent.map(q => q.total_ms||0);
+  const pTok    = recent.map(q => q.prompt_tokens||0);
+  const cTok    = recent.map(q => q.completion_tokens||0);
+
+  if (!latChart) {
+    latChart = new Chart(document.getElementById('latChart'), {
+      type:'line',
+      data:{ labels, datasets:[{ label:'Total ms', data:latData, borderColor:'#4ade80', backgroundColor:'rgba(74,222,128,.08)', borderWidth:1.5, pointRadius:3, pointBackgroundColor:'#4ade80', tension:.3, fill:true }]},
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ y:{ticks:{callback:v=>v+'ms',color:'#6b7280'},grid:{color:'rgba(255,255,255,.04)'}}, x:{ticks:{color:'#6b7280'},grid:{display:false}} }}
+    });
+    tokChart = new Chart(document.getElementById('tokChart'), {
+      type:'bar',
+      data:{ labels, datasets:[
+        { label:'Prompt',     data:pTok, backgroundColor:'rgba(168,184,204,.7)', borderRadius:2 },
+        { label:'Completion', data:cTok, backgroundColor:'rgba(232,213,176,.7)', borderRadius:2 },
+      ]},
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ y:{ticks:{color:'#6b7280'},grid:{color:'rgba(255,255,255,.04)'}}, x:{ticks:{color:'#6b7280'},grid:{display:false}} }}
+    });
+  } else {
+    latChart.data.labels = labels;
+    latChart.data.datasets[0].data = latData;
+    latChart.update('none');
+    tokChart.data.labels = labels;
+    tokChart.data.datasets[0].data = pTok;
+    tokChart.data.datasets[1].data = cTok;
+    tokChart.update('none');
+  }
+
+  // query table
+  const tbody = document.getElementById('qtbody');
+  tbody.innerHTML = '';
+  (d.recent_queries||[]).forEach(q => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ac)">${q.question_preview||'—'}</td>
+      <td>${latPill(q.total_ms||0)}</td>
+      <td style="color:var(--ac2)">${q.retrieval_ms||0}ms</td>
+      <td style="color:#7F77DD">${q.rerank_ms||0}ms</td>
+      <td style="color:var(--gn)">${q.llm_ms||0}ms</td>
+      <td style="color:var(--mu)">${(q.prompt_tokens||0)+(q.completion_tokens||0)}</td>
+      <td>${costStr(q.estimated_cost_usd||0)}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+refresh();
+setInterval(refresh, 5000);
+</script>
+</body>
+</html>
