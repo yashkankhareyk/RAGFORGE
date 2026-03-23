@@ -47,7 +47,7 @@ from openai import AsyncOpenAI
 
 # ── Local modules ─────────────────────────────────────────────────────────────
 from src.ingestion import load_vectorstore
-from src.retriever import HybridRetriever
+from src.retriever import HybridRetriever, VectorlessRetriever
 from src.reranker import CrossEncoderReranker
 from src.pipeline import (
     RAGPipeline,
@@ -284,18 +284,43 @@ def run_comparison(
     ragas_emb,
 ) -> List[dict]:
     """
-    Evaluates 3 configs:
-      A — Dense-only  (ChromaDB top-5, no BM25, no reranking)
-      B — Hybrid      (BM25 + Dense + RRF, top-5, no reranking)
-      C — Hybrid+Rerank  ← full production pipeline
+    Evaluates 4 configs — now includes vectorless (BM25-only) as baseline:
+
+      A — Vectorless   (pure BM25, no embeddings, no vector DB)   ← NEW
+      B — Dense-only   (ChromaDB top-5, no BM25, no reranking)
+      C — Hybrid       (BM25 + Dense + RRF, top-5, no reranking)
+      D — Hybrid+Rerank (full production pipeline)
+
+    The 4-config comparison tells a complete story:
+      "Pure BM25 is fast but misses semantics.
+       Dense catches semantics but misses keywords.
+       Hybrid fixes both. Reranking polishes the top results.
+       Each layer adds measurable value — here are the RAGAS numbers."
     """
     vectorstore = load_vectorstore()
     chunks      = _load_chunks_from_vectorstore(vectorstore)
     llm         = get_llm()
     all_scores  = []
 
-    # ── A: Dense-only ─────────────────────────────────────────────────────────
-    logger.info("\n=== Config A: Dense-Only Baseline ===")
+    # ── A: Vectorless — pure BM25, zero vector DB ─────────────────────────────
+    logger.info("\n=== Config A: Vectorless (Pure BM25 — no embeddings) ===")
+
+    class _VectorlessPipeline:
+        def __init__(self):
+            self.retriever = VectorlessRetriever(chunks, k=5)
+            self.chain     = RAG_PROMPT | llm
+        def query(self, question):
+            docs = self.retriever.retrieve(question)
+            ctx  = "\n\n---\n\n".join(d.page_content for d in docs)
+            resp = self.chain.invoke({"context": ctx, "question": question})
+            return {"answer": resp.content,
+                    "contexts": [d.page_content for d in docs]}
+
+    out_a = collect_pipeline_outputs(_VectorlessPipeline(), golden_data)
+    all_scores.append(run_ragas_evaluation(out_a, ragas_llm, ragas_emb, "Vectorless-BM25"))
+
+    # ── B: Dense-only ─────────────────────────────────────────────────────────
+    logger.info("\n=== Config B: Dense-Only (ChromaDB) ===")
 
     class _DensePipeline:
         def __init__(self):
@@ -308,11 +333,11 @@ def run_comparison(
             return {"answer": resp.content,
                     "contexts": [d.page_content for d in docs]}
 
-    out_a = collect_pipeline_outputs(_DensePipeline(), golden_data)
-    all_scores.append(run_ragas_evaluation(out_a, ragas_llm, ragas_emb, "Dense-Only"))
+    out_b = collect_pipeline_outputs(_DensePipeline(), golden_data)
+    all_scores.append(run_ragas_evaluation(out_b, ragas_llm, ragas_emb, "Dense-Only"))
 
-    # ── B: Hybrid, no reranking ────────────────────────────────────────────────
-    logger.info("\n=== Config B: Hybrid (no reranking) ===")
+    # ── C: Hybrid, no reranking ────────────────────────────────────────────────
+    logger.info("\n=== Config C: Hybrid (BM25 + Dense + RRF, no reranking) ===")
 
     class _HybridPipeline:
         def __init__(self):
@@ -325,18 +350,18 @@ def run_comparison(
             return {"answer": resp.content,
                     "contexts": [d.page_content for d in docs]}
 
-    out_b = collect_pipeline_outputs(_HybridPipeline(), golden_data)
-    all_scores.append(run_ragas_evaluation(out_b, ragas_llm, ragas_emb, "Hybrid-NoRerank"))
+    out_c = collect_pipeline_outputs(_HybridPipeline(), golden_data)
+    all_scores.append(run_ragas_evaluation(out_c, ragas_llm, ragas_emb, "Hybrid-NoRerank"))
 
-    # ── C: Full pipeline ───────────────────────────────────────────────────────
-    logger.info("\n=== Config C: Hybrid + Cross-Encoder Reranking (FULL) ===")
+    # ── D: Full pipeline — Hybrid + Cross-Encoder Reranking ───────────────────
+    logger.info("\n=== Config D: Hybrid + Cross-Encoder Reranking (FULL) ===")
     full = RAGPipeline(
         retriever=HybridRetriever(vectorstore, chunks, k=20),
         reranker=CrossEncoderReranker(top_n=5),
         llm=llm,
     )
-    out_c = collect_pipeline_outputs(full, golden_data)
-    all_scores.append(run_ragas_evaluation(out_c, ragas_llm, ragas_emb, "Hybrid+Rerank"))
+    out_d = collect_pipeline_outputs(full, golden_data)
+    all_scores.append(run_ragas_evaluation(out_d, ragas_llm, ragas_emb, "Hybrid+Rerank"))
 
     return all_scores
 
@@ -346,28 +371,85 @@ def run_comparison(
 # ─────────────────────────────────────────────────────────────────────────────
 
 def print_scorecard(results: List[dict]):
+    """
+    Prints three views:
+      1. Full 4-config scorecard table
+      2. Embedding vs Vectorless head-to-head (the core comparison)
+      3. Full pipeline delta vs vectorless baseline
+    """
     metrics   = ["faithfulness", "answer_relevancy", "context_precision", "context_recall"]
     col_width = 20
 
+    # ── 1. Full scorecard ────────────────────────────────────────────────────
     print("\n" + "=" * 80)
-    print("  RAGAS EVALUATION SCORECARD")
+    print("  RAGAS EVALUATION SCORECARD — ALL CONFIGS")
     print("=" * 80)
     header = f"{'Metric':<26}" + "".join(f"{r['config']:<{col_width}}" for r in results)
     print(header)
     print("-" * 80)
     for metric in metrics:
         row = f"{metric:<26}"
-        for r in results:
-            row += f"{r.get(metric, 0.0):<{col_width}.4f}"
+        vals = [r.get(metric, 0.0) for r in results]
+        best = max(vals)
+        for v in vals:
+            cell = f"{v:.4f}"
+            if abs(v - best) < 0.0001:
+                cell = cell + " ★"
+            row += f"{cell:<{col_width}}"
         print(row)
     print("-" * 80)
+    print("  ★ = best score for that metric")
     print("\nScores 0-1. Higher is better.\n")
 
-    if len(results) == 3:
-        a, c = results[0], results[2]
-        print("Delta: Full Pipeline vs Dense-Only Baseline")
+    # ── 2. Embedding vs Vectorless head-to-head ──────────────────────────────
+    vectorless = next((r for r in results if "Vectorless" in r["config"]), None)
+    dense      = next((r for r in results if "Dense" in r["config"]), None)
+
+    if vectorless and dense:
+        print("=" * 60)
+        print("  EMBEDDING vs VECTORLESS — HEAD TO HEAD")
+        print("=" * 60)
+        print(f"  {'Metric':<28} {'Vectorless (BM25)':<22} {'Dense (Embeddings)':<22} {'Winner'}")
+        print("  " + "-" * 56)
         for metric in metrics:
-            delta = c.get(metric, 0.0) - a.get(metric, 0.0)
+            v_score = vectorless.get(metric, 0.0)
+            d_score = dense.get(metric, 0.0)
+            delta   = d_score - v_score
+            if delta > 0.005:
+                winner = "Embeddings ▲ +" + f"{delta:.4f}"
+            elif delta < -0.005:
+                winner = "Vectorless ▲ +" + f"{abs(delta):.4f}"
+            else:
+                winner = "Tie"
+            print(f"  {metric:<28} {v_score:<22.4f} {d_score:<22.4f} {winner}")
+        print()
+
+        # Overall winner
+        embed_wins = sum(
+            1 for m in metrics
+            if dense.get(m, 0.0) > vectorless.get(m, 0.0) + 0.005
+        )
+        vless_wins = sum(
+            1 for m in metrics
+            if vectorless.get(m, 0.0) > dense.get(m, 0.0) + 0.005
+        )
+        print(f"  Embeddings win: {embed_wins}/4 metrics")
+        print(f"  Vectorless win: {vless_wins}/4 metrics")
+        if embed_wins > vless_wins:
+            print("  → Verdict: Embeddings justify the infrastructure cost on this dataset.")
+        elif vless_wins > embed_wins:
+            print("  → Verdict: BM25 competitive here — keyword-heavy domain favours sparse retrieval.")
+        else:
+            print("  → Verdict: Mixed results — domain has both keyword and semantic queries.")
+        print()
+
+    # ── 3. Full pipeline delta vs vectorless baseline ────────────────────────
+    if len(results) >= 2:
+        baseline = results[0]
+        full     = results[-1]
+        print(f"Delta: {full['config']} vs {baseline['config']} (baseline)")
+        for metric in metrics:
+            delta = full.get(metric, 0.0) - baseline.get(metric, 0.0)
             arrow = "▲" if delta >= 0 else "▼"
             print(f"  {metric:<34} {arrow} {delta:+.4f}")
     print()
@@ -393,7 +475,7 @@ if __name__ == "__main__":
     golden_data = load_golden_dataset()
 
     if args.mode == "compare":
-        print("\nRunning A/B/C comparison (~5-10 min for 30 QA pairs)...")
+        print("\nRunning A/B/C/D comparison (~7-12 min for 30 QA pairs)...")
         results = run_comparison(golden_data, ragas_llm, ragas_emb)
     else:
         print("\nEvaluating full pipeline (Hybrid + Reranking)...")

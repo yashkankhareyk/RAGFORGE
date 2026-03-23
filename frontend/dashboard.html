@@ -79,6 +79,58 @@ tr:hover td{background:rgba(255,255,255,.012)}
 .cost-k{color:var(--mu);font-size:12px}
 .cost-v{color:var(--tx);font-family:var(--sr);font-size:15px}
 .cost-v.free{color:var(--gn)}
+
+/* RAGAS SCORECARD */
+.ragas-section{background:var(--sf);border:1px solid var(--bd);border-radius:8px;overflow:hidden;margin-bottom:24px}
+.ragas-hd{padding:16px 20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.ragas-title{font-size:12px;color:var(--mu);letter-spacing:.5px;text-transform:uppercase}
+.ragas-legend{display:flex;gap:14px;flex-wrap:wrap}
+.rl-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mu)}
+.rl-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.ragas-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-bottom:1px solid var(--bd)}
+.ragas-col{padding:14px 16px;border-right:1px solid var(--bd)}
+.ragas-col:last-child{border-right:none}
+.ragas-col-hd{font-size:10px;color:var(--mu);letter-spacing:.5px;margin-bottom:10px;text-transform:uppercase}
+.ragas-col-name{font-size:11px;font-weight:500;margin-bottom:2px}
+.ragas-col-sub{font-size:10px;color:var(--mu);margin-bottom:12px}
+.ragas-metric{margin-bottom:10px}
+.rm-label{font-size:10px;color:var(--mu);margin-bottom:3px}
+.rm-val{font-size:14px;font-weight:500;margin-bottom:3px}
+.rm-bar{height:3px;border-radius:2px;background:var(--bd);overflow:hidden;margin-bottom:2px}
+.rm-fill{height:3px;border-radius:2px;transition:width .6s ease}
+.rm-best{font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(74,222,128,.1);color:var(--gn);border:1px solid rgba(74,222,128,.2);margin-left:4px}
+.delta-row{padding:14px 20px;display:grid;grid-template-columns:160px repeat(4,1fr);gap:0;font-size:11px;border-bottom:1px solid var(--bd)}
+.delta-row:last-child{border-bottom:none}
+.delta-label{color:var(--mu)}
+.delta-val{text-align:center;font-weight:500}
+.dv-up{color:var(--gn)}
+.dv-down{color:#f87171}
+.dv-flat{color:var(--mu)}
+.no-eval{padding:32px;text-align:center;font-size:12px;color:var(--mu)}
+
+/* HEAD TO HEAD PANEL */
+.hth-section{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:22px 24px;margin-bottom:24px}
+.hth-title{font-size:12px;color:var(--mu);letter-spacing:.5px;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.hth-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+.hth-card{background:var(--sf2);border:1px solid var(--bd);border-radius:6px;padding:14px 16px}
+.hth-card-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.hth-card-name{font-size:15px;font-weight:500;margin-bottom:10px}
+.hth-metric{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bd);font-size:12px}
+.hth-metric:last-child{border-bottom:none}
+.hth-metric .k{color:var(--mu)}
+.hth-metric .v{font-weight:500}
+.hth-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px}
+.hth-table th{padding:8px 12px;text-align:left;font-size:10px;color:var(--mu);font-weight:500;letter-spacing:.5px;text-transform:uppercase;background:var(--sf2);border-bottom:1px solid var(--bd)}
+.hth-table td{padding:9px 12px;border-bottom:1px solid var(--bd)}
+.hth-table tr:last-child td{border-bottom:none}
+.winner-embed{color:#378ADD;font-weight:500}
+.winner-vless{color:#f59e0b;font-weight:500}
+.winner-tie{color:var(--mu)}
+.verdict-box{padding:12px 16px;border-radius:6px;font-size:12px;line-height:1.6;margin-top:4px}
+.verdict-embed{background:rgba(55,138,221,.08);border:1px solid rgba(55,138,221,.2);color:#a8c8f0}
+.verdict-vless{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);color:#fcd571}
+.verdict-tie{background:rgba(107,114,128,.08);border:1px solid rgba(107,114,128,.2);color:var(--mu)}
+.win-count{font-size:22px;font-weight:300;font-family:var(--sr)}
 </style>
 </head>
 <body>
@@ -180,6 +232,43 @@ tr:hover td{background:rgba(255,255,255,.012)}
         </tr></thead>
         <tbody id="qtbody"></tbody>
       </table>
+    </div>
+
+
+    <!-- EMBEDDING vs VECTORLESS HEAD TO HEAD -->
+    <div class="sl">Embedding vs Vectorless — head to head</div>
+    <div class="hth-section" id="hth-section">
+      <div class="hth-title">
+        <span>BM25 (no embeddings) vs Dense (BAAI/bge-base-en-v1.5)</span>
+        <span id="hth-winner-badge" style="font-size:11px;padding:4px 10px;border-radius:4px"></span>
+      </div>
+      <div class="hth-grid">
+        <div class="hth-card" id="hth-vless-card">
+          <div class="hth-card-label" style="color:#f59e0b">Vectorless</div>
+          <div class="hth-card-name">BM25 only</div>
+          <div id="hth-vless-metrics"></div>
+        </div>
+        <div class="hth-card" id="hth-embed-card">
+          <div class="hth-card-label" style="color:#378ADD">Embedding</div>
+          <div class="hth-card-name">Dense (ChromaDB)</div>
+          <div id="hth-embed-metrics"></div>
+        </div>
+      </div>
+      <table class="hth-table">
+        <thead><tr><th>Metric</th><th style="color:#f59e0b">Vectorless</th><th style="color:#378ADD">Dense</th><th>Delta</th><th>Winner</th></tr></thead>
+        <tbody id="hth-tbody"></tbody>
+      </table>
+      <div class="verdict-box verdict-tie" id="hth-verdict">Run evaluation to see results</div>
+    </div>
+
+    <!-- RAGAS EVALUATION SCORECARD -->
+    <div class="sl" style="margin-top:8px">RAGAS evaluation — A/B/C/D comparison</div>
+    <div class="ragas-section" id="ragas-section">
+      <div class="ragas-hd">
+        <span class="ragas-title">Config comparison · run: python src/evaluate.py --mode compare</span>
+        <div class="ragas-legend" id="ragas-legend"></div>
+      </div>
+      <div id="ragas-body"><div class="no-eval">No eval_results.json found yet.<br>Run: <strong>python src/evaluate.py --mode compare</strong></div></div>
     </div>
   </main>
 </div>
@@ -289,6 +378,183 @@ async function refresh() {
 
 refresh();
 setInterval(refresh, 5000);
+
+// ── RAGAS Scorecard ──────────────────────────────────────────────────────────
+const RAGAS_COLORS = {
+  'Vectorless-BM25':  '#f59e0b',   // amber
+  'Dense-Only':       '#378ADD',   // blue
+  'Hybrid-NoRerank':  '#7F77DD',   // purple
+  'Hybrid+Rerank':    '#4ade80',   // green
+};
+const METRICS_DISPLAY = {
+  'faithfulness':     'Faithfulness',
+  'answer_relevancy': 'Answer Relevancy',
+  'context_precision':'Context Precision',
+  'context_recall':   'Context Recall',
+};
+
+
+
+function renderHeadToHead(data) {
+  const vectorless = data.find(d => d.config.includes('Vectorless'));
+  const dense      = data.find(d => d.config.includes('Dense'));
+  if (!vectorless || !dense) return;
+
+  const metrics = {
+    'faithfulness':     'Faithfulness',
+    'answer_relevancy': 'Answer Relevancy',
+    'context_precision':'Context Precision',
+    'context_recall':   'Context Recall',
+  };
+
+  // Fill metric cards
+  ['vless','embed'].forEach((key, idx) => {
+    const d   = idx === 0 ? vectorless : dense;
+    const col = idx === 0 ? '#f59e0b' : '#378ADD';
+    const el  = document.getElementById('hth-'+key+'-metrics');
+    el.innerHTML = Object.entries(metrics).map(([m, label]) => {
+      const v = (d[m]||0).toFixed(4);
+      return `<div class="hth-metric"><span class="k">${label}</span><span class="v" style="color:${col}">${v}</span></div>`;
+    }).join('');
+  });
+
+  // Table rows
+  const tbody = document.getElementById('hth-tbody');
+  let embedWins = 0, vlessWins = 0;
+  tbody.innerHTML = Object.entries(metrics).map(([m, label]) => {
+    const vv = vectorless[m] || 0;
+    const dv = dense[m] || 0;
+    const delta = dv - vv;
+    let winnerHtml, winnerStr;
+    if (delta > 0.005) {
+      winnerHtml = '<span class="winner-embed">Dense ▲</span>';
+      winnerStr = 'embed'; embedWins++;
+    } else if (delta < -0.005) {
+      winnerHtml = '<span class="winner-vless">Vectorless ▲</span>';
+      winnerStr = 'vless'; vlessWins++;
+    } else {
+      winnerHtml = '<span class="winner-tie">Tie</span>';
+    }
+    const deltaStr = delta === 0 ? '—' : (delta > 0 ? '+' : '') + delta.toFixed(4);
+    const deltaCol = delta > 0.005 ? '#378ADD' : delta < -0.005 ? '#f59e0b' : '#6b7280';
+    return `<tr>
+      <td style="color:var(--mu)">${label}</td>
+      <td style="color:#f59e0b">${vv.toFixed(4)}</td>
+      <td style="color:#378ADD">${dv.toFixed(4)}</td>
+      <td style="color:${deltaCol};font-weight:500">${deltaStr}</td>
+      <td>${winnerHtml}</td>
+    </tr>`;
+  }).join('');
+
+  // Verdict
+  const verdict  = document.getElementById('hth-verdict');
+  const badge    = document.getElementById('hth-winner-badge');
+  if (embedWins > vlessWins) {
+    verdict.className = 'verdict-box verdict-embed';
+    verdict.innerHTML = `<strong>Embeddings win ${embedWins}/4 metrics.</strong> The semantic understanding from BAAI/bge-base-en-v1.5 meaningfully improves retrieval quality — the infrastructure cost is justified for this dataset.`;
+    badge.textContent = 'Embeddings win';
+    badge.style.cssText = 'background:rgba(55,138,221,.1);color:#378ADD;border:1px solid rgba(55,138,221,.2);font-size:11px;padding:4px 10px;border-radius:4px';
+  } else if (vlessWins > embedWins) {
+    verdict.className = 'verdict-box verdict-vless';
+    verdict.innerHTML = `<strong>Vectorless wins ${vlessWins}/4 metrics.</strong> Keyword-heavy domain — BM25 handles exact policy terms well. Consider vectorless for resource-constrained deployments.`;
+    badge.textContent = 'Vectorless wins';
+    badge.style.cssText = 'background:rgba(245,158,11,.1);color:#f59e0b;border:1px solid rgba(245,158,11,.2);font-size:11px;padding:4px 10px;border-radius:4px';
+  } else {
+    verdict.className = 'verdict-box verdict-tie';
+    verdict.innerHTML = `<strong>Mixed results (${embedWins} vs ${vlessWins}).</strong> Domain has both keyword-heavy and semantic queries — hybrid retrieval combining both is the right call.`;
+    badge.textContent = 'Mixed';
+    badge.style.cssText = 'background:rgba(107,114,128,.1);color:var(--mu);border:1px solid rgba(107,114,128,.2);font-size:11px;padding:4px 10px;border-radius:4px';
+  }
+}
+
+async function loadRagas() {
+  let data;
+  try {
+    const r = await fetch('../tests/eval_results.json?t=' + Date.now());
+    if (!r.ok) { tryFallbackRagas(); return; }
+    data = await r.json();
+  } catch(e) { tryFallbackRagas(); return; }
+  renderRagas(data);
+}
+
+function tryFallbackRagas() {
+  // Try loading from same directory (if user copied eval_results.json)
+  fetch('./eval_results.json?t=' + Date.now())
+    .then(r => r.ok ? r.json() : null)
+    .then(d => { if (d) renderRagas(d); })
+    .catch(() => {});
+}
+
+function renderRagas(data) {
+  if (!data || !data.length) return;
+
+  const metrics = Object.keys(METRICS_DISPLAY);
+  const body    = document.getElementById('ragas-body');
+  const legend  = document.getElementById('ragas-legend');
+
+  // Legend
+  legend.innerHTML = data.map(d => {
+    const col = RAGAS_COLORS[d.config] || '#888';
+    return `<div class="rl-item"><span class="rl-dot" style="background:${col}"></span>${d.config}</div>`;
+  }).join('');
+
+  // Find best score per metric
+  const best = {};
+  metrics.forEach(m => {
+    best[m] = Math.max(...data.map(d => d[m] || 0));
+  });
+
+  // Config columns grid
+  const colsHtml = data.map(d => {
+    const col = RAGAS_COLORS[d.config] || '#888';
+    const metricsHtml = metrics.map(m => {
+      const val  = d[m] || 0;
+      const isBest = Math.abs(val - best[m]) < 0.0001;
+      const pct  = (val * 100).toFixed(1);
+      return `<div class="ragas-metric">
+        <div class="rm-label">${METRICS_DISPLAY[m]}</div>
+        <div style="display:flex;align-items:center">
+          <span class="rm-val" style="color:${col}">${val.toFixed(4)}</span>
+          ${isBest ? '<span class="rm-best">best</span>' : ''}
+        </div>
+        <div class="rm-bar"><div class="rm-fill" style="width:${pct}%;background:${col}"></div></div>
+      </div>`;
+    }).join('');
+    return `<div class="ragas-col">
+      <div class="ragas-col-hd" style="color:${col}">${d.config}</div>
+      <div class="ragas-col-sub">${d.num_samples || '?'} samples</div>
+      ${metricsHtml}
+    </div>`;
+  }).join('');
+
+  // Delta rows (vs first config = vectorless baseline)
+  const baseline = data[0];
+  const full     = data[data.length - 1];
+  const deltaHtml = metrics.map(m => {
+    const cells = data.map(d => {
+      const delta = (d[m] || 0) - (baseline[m] || 0);
+      const cls   = delta > 0.001 ? 'dv-up' : delta < -0.001 ? 'dv-down' : 'dv-flat';
+      const str   = delta === 0 ? '—' : (delta > 0 ? '+' : '') + delta.toFixed(4);
+      return `<div class="delta-val ${cls}">${str}</div>`;
+    }).join('');
+    return `<div class="delta-row">
+      <div class="delta-label">Δ ${METRICS_DISPLAY[m]}</div>
+      ${cells}
+    </div>`;
+  }).join('');
+
+  renderHeadToHead(data);
+  body.innerHTML = `
+    <div class="ragas-grid">${colsHtml}</div>
+    <div style="padding:10px 20px 4px;font-size:10px;color:var(--mu);letter-spacing:.5px;text-transform:uppercase;border-top:1px solid var(--bd);margin-top:0">Delta vs ${baseline.config} (baseline)</div>
+    ${deltaHtml}
+  `;
+}
+
+loadRagas();
+// Reload every 30s in case user runs evaluate while dashboard is open
+setInterval(loadRagas, 30000);
+
 </script>
 </body>
 </html>

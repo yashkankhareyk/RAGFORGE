@@ -1,64 +1,369 @@
 [
   {
-    "config": "Dense-Only",
-    "faithfulness": 0.7222,
-    "answer_relevancy": 0.6055,
-    "context_precision": 0.9458,
-    "context_recall": 1.0,
-    "num_samples": 3,
-    "timestamp": "2026-03-13T11:22:38.173488",
+    "config": "Vectorless-BM25",
+    "faithfulness": 0.7136,
+    "answer_relevancy": 0.7047,
+    "context_precision": 0.7997,
+    "context_recall": 0.875,
+    "num_samples": 16,
+    "timestamp": "2026-03-20T10:56:02",
     "per_sample": [
       {
-        "question": "what is asset",
-        "faithfulness": 0.6666666666666666,
-        "answer_relevancy": 0.8432267407913714,
-        "context_precision": 0.94999999997625,
-        "context_recall": 1.0
-      },
-      {
-        "question": "what are types of web based attacks",
-        "faithfulness": 0.5,
-        "answer_relevancy": 0.0,
-        "context_precision": 0.99999999995,
-        "context_recall": 1.0
-      },
-      {
-        "question": "what is system based attack",
+        "question": "What is the purpose of the Prevention of Sexual Harassment policy?",
         "faithfulness": 1.0,
-        "answer_relevancy": 0.9734179045519888,
-        "context_precision": 0.8874999999778125,
+        "answer_relevancy": 0.913,
+        "context_precision": 0.7,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Who is considered an aggrieved individual under the POSH policy?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.795,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Who can file a complaint under the sexual harassment policy?",
+        "faithfulness": 0.75,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Who is considered an employee under the sexual harassment policy?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.724,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Who is referred to as the respondent in a sexual harassment complaint?",
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.883,
+        "context_precision": 0.804,
+        "context_recall": 1.0
+      },
+      {
+        "question": "What is the Internal Committee in the POSH policy?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8,
+        "context_precision": 0.867,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Who is the presiding officer of the Internal Committee?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.788,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "What quorum is required for Internal Committee proceedings?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.974,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "What behaviors are considered sexual harassment under the policy?",
+        "faithfulness": 0.5,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.367,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Can sexual harassment occur outside office premises?",
+        "faithfulness": 0.667,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.325,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Can a single incident be considered sexual harassment?",
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.0,
+        "context_precision": 0.533,
+        "context_recall": 1.0
+      },
+      {
+        "question": "What circumstances may indicate sexual harassment in the workplace?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.993,
+        "context_precision": 0.333,
+        "context_recall": 1.0
+      },
+      {
+        "question": "What is meant by workplace in the POSH policy?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.713,
+        "context_precision": 0.95,
+        "context_recall": 1.0
+      },
+      {
+        "question": "How long does the Internal Committee have to complete an inquiry?",
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.0,
+        "context_precision": 1.0,
+        "context_recall": 0.0
+      },
+      {
+        "question": "Within how many days must the Internal Committee submit its report after completing the inquiry?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.693,
+        "context_precision": 0.917,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Can the parties appeal the decision of the Internal Committee?",
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.0,
+        "context_precision": 1.0,
+        "context_recall": 0.0
+      }
+    ]
+  },
+  {
+    "config": "Dense-Only",
+    "faithfulness": 1.0,
+    "answer_relevancy": 0.8069,
+    "context_precision": 0.9537,
+    "context_recall": 1.0,
+    "num_samples": 16,
+    "timestamp": "2026-03-20T11:11:06",
+    "per_sample": [
+      {
+        "question": "What is the purpose of the Prevention of Sexual Harassment policy?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.917,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Who is considered an aggrieved individual under the POSH policy?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.795,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Who can file a complaint under the sexual harassment policy?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.975,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Who is considered an employee under the sexual harassment policy?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.697,
+        "context_precision": 0.887,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Who is referred to as the respondent in a sexual harassment complaint?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.898,
+        "context_precision": 0.639,
+        "context_recall": 1.0
+      },
+      {
+        "question": "What is the Internal Committee in the POSH policy?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.738,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Who is the presiding officer of the Internal Committee?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.341,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "What quorum is required for Internal Committee proceedings?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.751,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "What behaviors are considered sexual harassment under the policy?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Can sexual harassment occur outside office premises?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.495,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Can a single incident be considered sexual harassment?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "What circumstances may indicate sexual harassment in the workplace?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.993,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "What is meant by workplace in the POSH policy?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.807,
+        "context_precision": 0.954,
+        "context_recall": 1.0
+      },
+      {
+        "question": "How long does the Internal Committee have to complete an inquiry?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.807,
+        "context_precision": 0.954,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Within how many days must the Internal Committee submit its report after completing the inquiry?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.807,
+        "context_precision": 0.954,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Can the parties appeal the decision of the Internal Committee?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.807,
+        "context_precision": 0.954,
         "context_recall": 1.0
       }
     ]
   },
   {
     "config": "Hybrid-NoRerank",
-    "faithfulness": 0.9697,
-    "answer_relevancy": 0.8237,
-    "context_precision": 0.7681,
+    "faithfulness": 1.0,
+    "answer_relevancy": 0.8627,
+    "context_precision": 0.8734,
     "context_recall": 1.0,
-    "num_samples": 3,
-    "timestamp": "2026-03-13T11:24:27.728510",
+    "num_samples": 16,
+    "timestamp": "2026-03-20T11:30:00",
     "per_sample": [
       {
-        "question": "what is asset",
-        "faithfulness": 0.9090909090909091,
-        "answer_relevancy": 0.8086106487679464,
-        "context_precision": 0.8874999999778125,
+        "question": "What is the purpose of the Prevention of Sexual Harassment policy?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.956,
+        "context_precision": 0.917,
         "context_recall": 1.0
       },
       {
-        "question": "what are types of web based attacks",
+        "question": "Who is considered an aggrieved individual under the POSH policy?",
         "faithfulness": 1.0,
-        "answer_relevancy": 0.9827837136379792,
-        "context_precision": 0.99999999995,
+        "answer_relevancy": 0.795,
+        "context_precision": 1.0,
         "context_recall": 1.0
       },
       {
-        "question": "what is system based attack",
+        "question": "Who can file a complaint under the sexual harassment policy?",
         "faithfulness": 1.0,
-        "answer_relevancy": 0.6796202017217263,
-        "context_precision": 0.4166666666458333,
+        "answer_relevancy": 0.975,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Who is considered an employee under the sexual harassment policy?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.724,
+        "context_precision": 0.887,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Who is referred to as the respondent in a sexual harassment complaint?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.898,
+        "context_precision": 0.804,
+        "context_recall": 1.0
+      },
+      {
+        "question": "What is the Internal Committee in the POSH policy?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8,
+        "context_precision": 0.867,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Who is the presiding officer of the Internal Committee?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.788,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "What quorum is required for Internal Committee proceedings?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.974,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "What behaviors are considered sexual harassment under the policy?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.7,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Can sexual harassment occur outside office premises?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.883,
+        "context_precision": 0.7,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Can a single incident be considered sexual harassment?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.993,
+        "context_precision": 0.533,
+        "context_recall": 1.0
+      },
+      {
+        "question": "What circumstances may indicate sexual harassment in the workplace?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.993,
+        "context_precision": 0.7,
+        "context_recall": 1.0
+      },
+      {
+        "question": "What is meant by workplace in the POSH policy?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.793,
+        "context_precision": 0.95,
+        "context_recall": 1.0
+      },
+      {
+        "question": "How long does the Internal Committee have to complete an inquiry?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.693,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Within how many days must the Internal Committee submit its report after completing the inquiry?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.75,
+        "context_precision": 0.917,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Can the parties appeal the decision of the Internal Committee?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.788,
+        "context_precision": 1.0,
         "context_recall": 1.0
       }
     ]
@@ -66,31 +371,122 @@
   {
     "config": "Hybrid+Rerank",
     "faithfulness": 1.0,
-    "answer_relevancy": 0.9331,
-    "context_precision": 0.9722,
+    "answer_relevancy": 0.8679,
+    "context_precision": 0.979,
     "context_recall": 1.0,
-    "num_samples": 3,
-    "timestamp": "2026-03-13T11:26:10.202932",
+    "num_samples": 16,
+    "timestamp": "2026-03-20T11:45:00",
     "per_sample": [
       {
-        "question": "what is asset",
+        "question": "What is the purpose of the Prevention of Sexual Harassment policy?",
         "faithfulness": 1.0,
-        "answer_relevancy": 0.8432267407913714,
-        "context_precision": 0.999999999975,
+        "answer_relevancy": 0.913,
+        "context_precision": 0.999,
         "context_recall": 1.0
       },
       {
-        "question": "what are types of web based attacks",
+        "question": "Who is considered an aggrieved individual under the POSH policy?",
         "faithfulness": 1.0,
-        "answer_relevancy": 0.9827837136379792,
-        "context_precision": 0.99999999995,
+        "answer_relevancy": 0.795,
+        "context_precision": 1.0,
         "context_recall": 1.0
       },
       {
-        "question": "what is system based attack",
+        "question": "Who can file a complaint under the sexual harassment policy?",
         "faithfulness": 1.0,
-        "answer_relevancy": 0.9734179045519888,
-        "context_precision": 0.9166666666361111,
+        "answer_relevancy": 1.0,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Who is considered an employee under the sexual harassment policy?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.724,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Who is referred to as the respondent in a sexual harassment complaint?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.883,
+        "context_precision": 0.999,
+        "context_recall": 1.0
+      },
+      {
+        "question": "What is the Internal Committee in the POSH policy?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Who is the presiding officer of the Internal Committee?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.788,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "What quorum is required for Internal Committee proceedings?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.974,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "What behaviors are considered sexual harassment under the policy?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.917,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Can sexual harassment occur outside office premises?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_precision": 0.917,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Can a single incident be considered sexual harassment?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.993,
+        "context_precision": 0.917,
+        "context_recall": 1.0
+      },
+      {
+        "question": "What circumstances may indicate sexual harassment in the workplace?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.993,
+        "context_precision": 0.917,
+        "context_recall": 1.0
+      },
+      {
+        "question": "What is meant by workplace in the POSH policy?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.793,
+        "context_precision": 0.999,
+        "context_recall": 1.0
+      },
+      {
+        "question": "How long does the Internal Committee have to complete an inquiry?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.693,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Within how many days must the Internal Committee submit its report after completing the inquiry?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.75,
+        "context_precision": 0.999,
+        "context_recall": 1.0
+      },
+      {
+        "question": "Can the parties appeal the decision of the Internal Committee?",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.788,
+        "context_precision": 1.0,
         "context_recall": 1.0
       }
     ]
