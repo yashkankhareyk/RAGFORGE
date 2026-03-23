@@ -11,4 +11,4 @@ rag-env/
 *.egg-info
 chroma_db/
 frontend/
-.env.example
+
