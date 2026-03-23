@@ -20,7 +20,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ ./src/
 COPY data/ ./data/
 COPY tests/ ./tests/
-COPY .env.example ./.env.example
 
 # Pre-build ChromaDB at image build time so first request isn't slow
 # This runs ingestion during docker build — vectors baked into the image
