@@ -79,7 +79,6 @@ chroma_db/
 chroma.sqlite3
 
 # Local data and cache
-data/
 logs/
 *.log
 
