@@ -40,6 +40,24 @@ chunk_count: int = 0
 async def lifespan(app: FastAPI):
     global pipeline, chunk_count
     logger.info("Starting RAGForge v2...")
+
+    # Auto-ingest if ChromaDB does not exist yet
+    # This handles the case where PDFs were uploaded after the Docker build
+    chroma_path = os.getenv("CHROMA_PERSIST_PATH", "./chroma_db")
+    data_dir    = "./data"
+
+    if not Path(chroma_path).exists():
+        logger.info("ChromaDB not found — running ingestion now...")
+        try:
+            from src.ingestion import load_documents, chunk_documents, build_vectorstore
+            docs   = load_documents(data_dir)
+            chunks = chunk_documents(docs)
+            build_vectorstore(chunks)
+            logger.info(f"Ingestion complete. {len(chunks)} chunks indexed.")
+        except Exception as e:
+            logger.error(f"Auto-ingestion failed: {e}")
+            logger.error("Make sure PDFs are in the data/ folder.")
+
     try:
         pipeline, chunks = init_pipeline()
         chunk_count = len(chunks)
