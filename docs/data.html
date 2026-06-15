@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>RAGForge — Data</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+/* reuse same styles as other frontend pages */
+:root{--bg:#0e0f11;--sf:#16181c;--sf2:#1e2028;--bd:#2a2d35;--bd2:#3a3e4a;--tx:#e8e9ec;--mu:#6b7280;--ac:#e8d5b0;--ac2:#a8b8cc;--gn:#4ade80;--mn:'IBM Plex Mono',monospace;--sr:'Fraunces',serif}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--bg);color:var(--tx);font-family:var(--mn);font-size:14px}
+.layout{display:grid;grid-template-columns:210px 1fr;min-height:100vh}
+.sb{background:var(--sf);border-right:1px solid var(--bd);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.sb-hd{padding:20px 18px 16px;border-bottom:1px solid var(--bd)}
+.logo{font-family:var(--sr);font-size:18px;font-weight:400;color:var(--ac);display:flex;align-items:center;gap:8px}
+.dot{width:7px;height:7px;background:var(--gn);border-radius:50%;box-shadow:0 0 8px rgba(74,222,128,.5);animation:pulse 2s ease-in-out infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.sb-nav{padding:10px 8px;flex:1}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:6px;color:var(--mu);font-size:12px;cursor:pointer;transition:all .15s;text-decoration:none;margin-bottom:2px;border:1px solid transparent}
+.ni:hover{background:var(--sf2);color:var(--tx)}
+.ni.active{background:var(--sf2);color:var(--ac);border-color:var(--bd)}
+.sb-ft{padding:14px 18px;border-top:1px solid var(--bd);font-size:11px;color:var(--mu)}
+.main{padding:32px;overflow-y:auto}
+.pt{font-family:var(--sr);font-size:26px;font-weight:300;color:var(--tx);line-height:1;margin-bottom:6px}
+.ps{font-size:11px;color:var(--mu);margin-bottom:18px}
+.data-wrap{display:flex;gap:14px}
+.data-list{width:260px;background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:12px;overflow:auto}
+.data-item{padding:8px;border-radius:6px;color:var(--ac);cursor:pointer;border:1px solid transparent;margin-bottom:6px}
+.data-item:hover{background:var(--sf2);border-color:var(--bd2);color:var(--tx)}
+.data-preview{flex:1;background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:12px;overflow:auto;color:var(--mu)}
+.btn{background:transparent;border:1px solid var(--bd);color:var(--mu);padding:6px 10px;border-radius:6px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sb">
+    <div class="sb-hd"><div class="logo"><span class="dot"></span>RAGForge</div></div>
+    <nav class="sb-nav">
+      <a href="index.html" class="ni">Chat</a>
+      <a href="dashboard.html" class="ni">Metrics</a>
+      <a href="data.html" class="ni active">Data</a>
+    </nav>
+    <div class="sb-ft">
+      <div style="font-size:10px;color:var(--mu)">API: localhost:8000</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="pt">Data</div>
+    <div class="ps">Browse documents in the project's <strong>data/</strong> folder. Click any file to preview inline.</div>
+
+    <div class="data-wrap">
+      <div class="data-list" id="data-list">Loading…</div>
+      <div class="data-preview" id="data-preview">Select a file to preview</div>
+    </div>
+  </main>
+</div>
+
+<!-- pdf modal reused for viewing PDFs inline -->
+<div id="pdf-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center">
+  <div style="width:86%;height:88%;background:var(--sf);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,.6);margin:auto">
+    <div style="padding:8px;background:var(--sf2);display:flex;justify-content:flex-end;align-items:center">
+      <button id="pdf-close" class="btn">Close</button>
+    </div>
+    <iframe id="pdf-iframe" style="flex:1;border:0;width:100%" title="PDF viewer"></iframe>
+  </div>
+</div>
+
+<script>
+// Auto-select API base: prefer localhost during local testing
+const API = (function(){
+  const remote = 'https://yashkankhareyk-ragforge.hf.space';
+  try{
+    const h = window.location.hostname;
+    if (h === 'localhost' || h === '127.0.0.1') return 'http://localhost:8000';
+  }catch(e){}
+  return remote;
+})();
+
+async function loadDataList(){
+  const el = document.getElementById('data-list');
+  el.textContent = 'Loading...';
+  try{
+    const r = await fetch(`${API}/api/files/list`);
+    if(!r.ok){ el.textContent = 'Cannot load files'; return; }
+    const files = await r.json();
+    if(!files.length){ el.innerHTML = '<div style="color:var(--mu)">No files in data/</div>'; return; }
+    el.innerHTML = '';
+    files.forEach(f => {
+      const d = document.createElement('div');
+      d.className = 'data-item'; d.textContent = f.name;
+      d.onclick = () => showPreview(f.name);
+      el.appendChild(d);
+    });
+  }catch(e){ el.textContent = 'Error loading files'; }
+}
+
+async function showPreview(name){
+  const pv = document.getElementById('data-preview'); pv.textContent = 'Loading preview...';
+  try{
+    const r = await fetch(`${API}/api/files/preview?name=${encodeURIComponent(name)}`);
+    if(!r.ok){ pv.textContent = 'No preview available'; return; }
+    const d = await r.json();
+    if(d.preview && d.preview.startsWith('[binary file]')){
+      pv.innerHTML = '<div style="color:var(--mu)">'+d.preview+'</div>' +
+        `<div style="margin-top:12px"><a href="${API}/files/${encodeURIComponent(name)}" target="_blank" style="color:var(--ac)">Open file in new tab</a> <button class="btn" style="margin-left:8px" onclick="openViewer('${name.replace(/'/g,"\\'")}')">Open in viewer</button></div>`;
+    } else {
+      pv.innerHTML = `<div style="white-space:pre-wrap;color:var(--tx);font-family:var(--mn);font-size:13px">${(d.preview||'').replace(/</g,'&lt;')}</div>`;
+    }
+  }catch(e){ pv.textContent = 'Failed to load preview'; }
+}
+
+function openViewer(relPath){
+  try{
+    const modal = document.getElementById('pdf-modal');
+    const iframe = document.getElementById('pdf-iframe');
+    const p = String(relPath).replace(/\\\\/g, '/').replace(/^\//, '');
+    const base = API.replace(/\/$/, '');
+    iframe.src = base + '/files/' + encodeURIComponent(p).replace(/%2F/g, '/');
+    modal.style.display = 'flex';
+  }catch(e){ console.error(e); }
+}
+
+document.getElementById('pdf-close').addEventListener('click', ()=>{ document.getElementById('pdf-iframe').src=''; document.getElementById('pdf-modal').style.display='none'; });
+
+loadDataList();
+</script>
+
+</body>
+</html>
