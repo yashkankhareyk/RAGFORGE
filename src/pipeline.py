@@ -155,6 +155,9 @@ class RAGPipeline:
 
         # Build tracking entry and record it
         entry = qt.finish(response_metadata, question)
+        # Attach top document sources to the tracker entry so the dashboard
+        # can show which documents were used for recent queries.
+        entry["sources"] = [d.metadata.get("source", "unknown") for d in top_docs]
         tracker.record(entry)
 
         return {

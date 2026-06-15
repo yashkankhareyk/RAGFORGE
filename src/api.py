@@ -21,6 +21,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -83,6 +84,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Serve uploaded/source files (data/) in-site at /files/*
+app.mount("/files", StaticFiles(directory="data"), name="files")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -207,3 +211,39 @@ async def stats():
 @app.get("/")
 async def root():
     return {"message": "RAGForge v2", "docs": "/docs", "metrics": "/metrics"}
+
+
+# Files listing + preview endpoints for frontend "Data" panel
+# Use /api/files/* to avoid collision with the StaticFiles mount at /files
+@app.get("/api/files/list")
+async def list_files():
+    data_dir = Path("data")
+    if not data_dir.exists():
+        return []
+    files = []
+    for p in sorted(data_dir.iterdir()):
+        if p.is_file():
+            files.append({
+                "name": p.name,
+                "path": f"/files/{p.name}",
+                "size": p.stat().st_size,
+            })
+    return files
+
+
+@app.get("/api/files/preview")
+async def preview_file(name: str):
+    """Return a short text preview for text-like files in the data/ folder."""
+    safe_name = Path(name).name  # prevent path traversal
+    p = Path("data") / safe_name
+    if not p.exists() or not p.is_file():
+        raise HTTPException(404, "File not found")
+    # Only preview common text formats
+    if p.suffix.lower() in {'.txt', '.md', '.json', '.csv'}:
+        try:
+            text = p.read_text(encoding='utf-8', errors='ignore')
+            return {"name": safe_name, "preview": text[:4000]}
+        except Exception as e:
+            raise HTTPException(500, f"Cannot read file: {e}")
+    # For non-text (pdf, docx) return a small message and the file path for the iframe
+    return {"name": safe_name, "preview": f"[binary file] use the /files/ endpoint to download or view: /files/{safe_name}"}

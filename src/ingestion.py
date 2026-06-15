@@ -77,6 +77,14 @@ def load_documents(data_dir: str) -> list:
             try:
                 loader = PyPDFLoader(str(pdf_path))
                 docs = loader.load()
+                # Normalize source metadata to be relative to the data/ folder
+                for d in docs:
+                    try:
+                        rel = str(pdf_path.relative_to(data_path)).replace('\\', '/')
+                    except Exception:
+                        rel = pdf_path.name
+                    d.metadata = d.metadata or {}
+                    d.metadata['source'] = rel
                 documents.extend(docs)
                 logger.info(f"  Loaded: {pdf_path.name} ({len(docs)} pages)")
             except Exception as e:
@@ -90,6 +98,13 @@ def load_documents(data_dir: str) -> list:
             try:
                 loader = TextLoader(str(txt_path), encoding="utf-8")
                 docs = loader.load()
+                for d in docs:
+                    try:
+                        rel = str(txt_path.relative_to(data_path)).replace('\\', '/')
+                    except Exception:
+                        rel = txt_path.name
+                    d.metadata = d.metadata or {}
+                    d.metadata['source'] = rel
                 documents.extend(docs)
                 logger.info(f"  Loaded: {txt_path.name}")
             except Exception as e:
